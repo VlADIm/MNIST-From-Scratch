@@ -20,9 +20,16 @@ Resources to actually research from:
 - [ ] [Backpropagation Lecture video](https://www.youtube.com/watch?v=i94OvYb6noo&t=3199s)
 - [ ] [Google Machine learning crash course](https://developers.google.com/machine-learning/crash-course/multi-class-neural-networks/softmax)
 
+The beautiful book
+---
+[Really good online textbook](http://neuralnetworksanddeeplearning.com/)
+- [ ] Plan out chapter readings
+
 ToDo Task List:
 ---
 - [ ] Create convolutional layers
 - [ ] Create pool layers
 - [ ] Create fully connected layer
 - [ ] Create feedforward neural network
+- [ ] Mini batch learning
+- [ ]
