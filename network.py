@@ -1,5 +1,7 @@
 import numpy as np
 from typing import Callable
+import layer
+import Costs.cost as cost
 
 class Network:
 
@@ -7,7 +9,7 @@ class Network:
     # TODO:
     '''
 
-    def __init__(self,size: int, func : Callable[[np.ndarray],np.ndarray] = None,func_prime: Callable[[np.ndarray],np.ndarray] = None) -> None:
+    def __init__(self, func : Callable[[np.ndarray],np.ndarray] = None,func_prime: Callable[[np.ndarray],np.ndarray] = None) -> None:
         '''
         # TODO:
         '''
@@ -18,23 +20,67 @@ class Network:
         def sigmoid_prime(activations : np.ndarray) -> np.ndarray:
             return sigmoid(activations)*(1-sigmoid(activations))
 
-        self.layers = size
+        self.layer_weights = []
+        self.layer_biases = []
+        self.layer_objects = []
         self.activation_function = sigmoid if func is None else func
         self.activation_function_prime = sigmoid if func_prime is None else func_prime
 
     @property
-    def layers(self):
+    def layer_weights(self) -> list:
         '''
         # TODO:
         '''
-        return self._layers
+        return self._layer_weights
 
-    @layers.setter
-    def layers(self,value: int):
+    @layer_weights.setter
+    def layer_weights(self,value: list) -> None:
         '''
         # TODO:
         '''
-        self._layers = np.random.rand(value)
+        self._layer_weights = value
+
+    @property
+    def layer_biases(self) -> list:
+        '''
+        # TODO:
+        '''
+        return self._layer_biases
+
+    @layer_biases.setter
+    def layer_biases(self,value: list) -> None:
+        '''
+        # TODO:
+        '''
+        self._layer_biases = value
+
+    @property
+    def layer_activations(self) -> list:
+        '''
+        # TODO:
+        '''
+        return self._layer_activations
+
+    @layer_activations.setter
+    def layer_activations(self,value: list) -> None:
+        '''
+        # TODO:
+        '''
+        self._layer_activations = value
+    @property
+    def layer_objects(self) -> list:
+        '''
+        # TODO:
+        '''
+        return self._layer_objects
+
+    @layer_objects.setter
+    def layer_objects(self,value: list) -> None:
+        '''
+        # TODO:
+        '''
+        self._layer_objects = value
+
     @property
     def activation_function(self) -> Callable[[np.ndarray],np.ndarray]:
         '''
@@ -63,19 +109,103 @@ class Network:
         '''
         self._activation_function_prime = func
 
-    def feedforward(self):
+    def addLayer(self, layer_object, input: int, output: int) -> None:
         '''
         # TODO:
         '''
-        print("TODO")
+        self.layer_objects.append(layer_object(self.activation_function,self.activation_function_prime))
+        self.layer_weights.append(np.random.randn(output,input)/np.sqrt(input))
+        self.layer_biases.append(np.random.randn(output,1))
+        print("TODO: check that new layers match neighboring layers")
 
-    def backpropagate(self):
+    def validateLayers(self):
         '''
         # TODO:
         '''
-        print("TODO")
-    def calculate_error():
+
+        print("UNFINISHED METHOD: Network.validateLayers()")
+
+    def feedforward(self, input: np.ndarray) -> np.ndarray:
         '''
         # TODO:
         '''
-        print("TODO")
+        for layer_object,layer_weight,layer_biase in zip(self.layer_objects,self.layer_weights, self.layer_biases):
+            input = layer_object.feedforward(input, layer_weight, layer_biase)
+        print("UNFINISHED METHOD: Network.feedforward()")
+
+    def calculateError(self):
+        '''
+        # TODO:
+        '''
+        print("UNFINISHED METHOD: Network.calculateError()")
+
+    def run(self, input):
+        '''
+        # TODO:
+        '''
+        print("UNFINISHED METHOD: Network.run()")
+
+    def stochasticGradientDescent(self):
+        '''
+        # TODO:
+        '''
+        # batchTraining()
+        print("UNFINISHED METHOD: Network.stochasticGradientDescent()")
+
+
+    def batchTraining(self, batch):
+        '''
+        # TODO:
+        batch is (inputs, outputs)
+        '''
+        for input, output in batch:
+            delta_partial_of_weights, delta_partial_of_biases = self.backpropagate(input,output)
+        print("UNFINISHED METHOD: Network.batchTraining()")
+
+
+    def backpropagate(self, input, output):
+        '''
+        # TODO:
+        '''
+        partial_of_weights = [np.zeros(weights.shape) for weights in self.layer_weights]
+        partial_of_biases = [np.zeros(biases.shape) for biases in self.layer_biases]
+        layer_activations = [input]
+        layer_values = []
+
+        for layer, weight, biase in zip(self.layer_objects, self.layer_weights, self.layer_biases):
+            layer_values.append(layer.feedforward(input, weight, biase))
+            layer_activations.append(layer.activations(layer_values[-1]))
+            input = layer_activations[-1]
+
+        delta = cost.CrossEntropyCost.delta(layer_values[-1],layer_activations[-1],output)
+
+        partial_of_weights[-1] = np.dot(delta, layer_activations[-2].transpose())
+        partial_of_biases[-1] = delta
+
+        for layer in range(2,len(self.layer_objects)+1):
+            delta = np.dot(self.layer_weights[-layer+1].transpose(),delta) * (self.layer_objects[-layer].activation_function(layer_values[-layer]))
+            partial_of_weights[-layer] = np.dot(delta, layer_activations[-layer-1].transpose())
+            partial_of_biases[-layer] = delta
+
+        return (partial_of_weights, partial_of_biases)
+        print("UNFINISHED METHOD: Network.backpropagate()")
+
+        # cost = 1/n
+        #
+        #  = 1 / n * (sum(activations[-1] * (activations-)))
+
+        # calculate cost
+        # print(type(cost.CrossEntropyCost.func(a,y))
+
+
+        # for input, output in batch:
+
+
+
+        # NEED Z VALUE FOR ALL LAYERS
+        # NEED ACTIVATIONS FOR ALL LAYERS
+
+        # NEED TO CALCULATE DELTA
+
+        # NEED TO CALCULATE PARTIAL OF b
+        # NEED TO CALCULATE PARTIAL OF w

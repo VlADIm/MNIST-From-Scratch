@@ -32,4 +32,10 @@ ToDo Task List:
 - [ ] Create fully connected layer
 - [ ] Create feedforward neural network
 - [ ] Mini batch learning
-- [ ]
+
+Other Tasks
+---
+- [ ] Create Cost Classes
+- [ ] Create Cost Class Template
+- [ ] Create Layer Template
+- [ ] Create Network Template???
