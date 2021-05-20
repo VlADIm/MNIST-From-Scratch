@@ -23,6 +23,9 @@ Resources to actually research from:
 The beautiful book
 ---
 [Really good online textbook](http://neuralnetworksanddeeplearning.com/)
+
+[Pypi mnist installer](https://pypi.org/project/python-mnist/)
+
 - [ ] Plan out chapter readings
 
 ToDo Task List:

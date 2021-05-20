@@ -2,6 +2,7 @@ import numpy as np
 from typing import Callable
 import layer
 import Costs.cost as cost
+import random
 
 class Network:
 
@@ -145,22 +146,41 @@ class Network:
         '''
         print("UNFINISHED METHOD: Network.run()")
 
-    def stochasticGradientDescent(self):
+    def stochasticGradientDescent(self, training_dataset, batch_size = 1, epoch= 10, learning_rate = 0.05, regularization_rate = 0.0):
         '''
         # TODO:
         '''
-        # batchTraining()
-        print("UNFINISHED METHOD: Network.stochasticGradientDescent()")
+        training = list(training_dataset)
+        training_set_size = len(training)
+
+        for i in range(epoch):
+            print("Training epoch %s of %s" %(i+1, epoch))
+            random.shuffle(training)
+            batches = [training[j:j+batch_size] for j in range(0,training_set_size,batch_size)]
+
+            for batch in batches:
+                self.batchTraining(batch,learning_rate,regularization_rate,training_set_size)
+
+        # print("UNFINISHED METHOD: Network.stochasticGradientDescent()")
 
 
-    def batchTraining(self, batch):
+    def batchTraining(self, batch, learning_rate, regularization_rate, training_set_size):
         '''
         # TODO:
         batch is (inputs, outputs)
         '''
+
+        partial_of_weights = [np.zeros(weights.shape) for weights in self.layer_weights]
+        partial_of_biases = [np.zeros(biases.shape) for biases in self.layer_biases]
+
         for input, output in batch:
             delta_partial_of_weights, delta_partial_of_biases = self.backpropagate(input,output)
-        print("UNFINISHED METHOD: Network.batchTraining()")
+            partial_of_weights = [weight+delta_weight for weight, delta_weight in zip(partial_of_weights, delta_partial_of_weights)]
+            partial_of_biases = [biase+delta_biase for biase, delta_biase in zip(partial_of_biases, delta_partial_of_biases)]
+
+        self.layer_weights = [ (1 - learning_rate*regularization_rate/training_set_size) * weight - learning_rate/len(batch) * delta_weight for weight, delta_weight in zip(self.layer_weights, partial_of_weights)]
+        self.layer_biases = [biase - (learning_rate/len(batch)) * delta_biase for biase, delta_biase in zip(self.layer_biases, partial_of_biases)]
+        # print("UNFINISHED METHOD: Network.batchTraining()")
 
 
     def backpropagate(self, input, output):
@@ -184,11 +204,12 @@ class Network:
 
         for layer in range(2,len(self.layer_objects)+1):
             delta = np.dot(self.layer_weights[-layer+1].transpose(),delta) * (self.layer_objects[-layer].activation_function(layer_values[-layer]))
-            partial_of_weights[-layer] = np.dot(delta, layer_activations[-layer-1].transpose())
             partial_of_biases[-layer] = delta
+            partial_of_weights[-layer] = np.dot(delta, layer_activations[-layer-1].transpose())
+
 
         return (partial_of_weights, partial_of_biases)
-        print("UNFINISHED METHOD: Network.backpropagate()")
+        # print("UNFINISHED METHOD: Network.backpropagate()")
 
         # cost = 1/n
         #
