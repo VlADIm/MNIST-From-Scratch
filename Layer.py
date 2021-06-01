@@ -101,6 +101,8 @@ class FullyConnectedLayer(object):
             Calculate : z = w*a_previous+b
             Calculate activations: a = func(z)
         '''
+        # print(weights)
+        # print(np.matmul(weights,inputs) + biases)
         return np.dot(weights,inputs) + biases
 
     def activations(self, values):
