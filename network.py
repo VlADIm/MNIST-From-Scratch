@@ -16,7 +16,7 @@ class Network:
         # TODO:
         '''
 
-        np.seterr('raise')
+        # np.seterr('raise')
 
         def sigmoid(activations : np.ndarray) -> np.ndarray:
             return 1.0/(1.0+np.exp(-activations))
@@ -249,18 +249,23 @@ class Network:
         # a = np.copy(input)
         layer_count = 0
         for layer, weight, biase in zip(self.layer_objects, self.layer_weights, self.layer_biases):
-            try:
-                input = layer.feedforward(input, weight, biase)
-                layer_values.append(np.copy(input))
-                input = layer.activation_function(input)
-                layer_activations.append(np.copy(input))
-            except Exception as e:
-                print(e)
-                print(layer)
-                print(weight)
-                print(biase)
-                print(input)
-                a = b
+            input = layer.feedforward(input, weight, biase)
+            layer_values.append(np.copy(input))
+            input = layer.activation_function(input)
+            layer_activations.append(np.copy(input))
+
+            # try:
+            #     input = layer.feedforward(input, weight, biase)
+            #     layer_values.append(np.copy(input))
+            #     input = layer.activation_function(input)
+            #     layer_activations.append(np.copy(input))
+            # except Exception as e:
+            #     print(e)
+            #     print(layer)
+            #     print(weight)
+            #     print(biase)
+            #     print(input)
+            #     a = b
             layer_count += 1
             # layer_values.append(temp)
             # # print(len(layer_activations))
