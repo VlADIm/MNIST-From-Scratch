@@ -1,38 +1,22 @@
-# MNIST-From-Scratch
-Learning neural networks and machine learning
-By Vladimir Malcevic
-
-Todo:
+# Design Document
+##### MNIST Prototype
+###### Author: Vladimir Malcevic
 ---
-- [x] Structure this Readme.md file to accurately depict the purpose of this project
-- [ ] Comment all classes, functions, methods, etc.
-- [ ] Determine and implement templating and organizational structure for project
-- [ ] Document the organizational structure and general convention
-- [ ] Add space for updates to the code
+__Project Goal:__ Write a MNIST classification neural network without using libraries such as PyTorch or TensorFlow to learn machine learning algorithms and processes.
 
+__Further Details:__
+- Project will use following online resources to research and implement algorithms
+    - [Neural Networks and Deep Learning Online Textbook](http://neuralnetworksanddeeplearning.com/)
+- Specific Goals
+    - Achieve over 90% accuracy on the test data set
+    - Utilize CUDA architecture to accelerate learning
 
-Goal:
----
-- [x] Learn about neural networks
-- [ ] Write and implement Fully Connected Neural Network for MNIST
-- [ ] Write and implement a Convolutional Neural Network
-- [ ] Write and implement a Long Short-Term Memory Neural Network
-- [ ] Write and implement a Generative Adversarial Network
-- [ ] Write and implement a Liquid Neural Network
-
-Additional Goals and Projects:
----
-- Add MNIST classifier to website and classify user's written input
-
-Sources:
----
-- [Really good online textbook](http://neuralnetworksanddeeplearning.com/)
-
-Additional Libraries
----
-- [python-mnist](https://pypi.org/project/python-mnist/)
-
-Resources To Further Examine:
----
-- [Backpropagation Lecture video](https://www.youtube.com/watch?v=i94OvYb6noo&t=3199s)
-- [Google Machine learning crash course](https://developers.google.com/machine-learning/crash-course/multi-class-neural-networks/softmax)
+__Code Outline__:
+- __loadMNIST.py__ : _Python file that loads and parses the MNIST dataset into training, validating, and testing datasets_
+    - `loadMNIST(object)`
+        - `_init_()`
+        - `OTHER`
+- __network.py__ : _Python file that contains the network class that handles training, classifying, saving, and loading neural networks_
+- __layer.py__ : _Python file that contains the layer classes that handle specific layer behaviors_
+- __costs.py__ : _Python file that contains all cost functions used by neural networks_
+- __main.py__ : _Python file that contains the implementation of the network class to train, run, and output the results_
