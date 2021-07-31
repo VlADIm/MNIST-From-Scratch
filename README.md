@@ -12,11 +12,9 @@ __Further Details:__
     - Utilize CUDA architecture to accelerate learning
 
 __Code Outline__:
-- __loadMNIST.py__ : _Python file that loads and parses the MNIST dataset into training, validating, and testing datasets_
-    - `loadMNIST(object)`
-        - `_init_()`
-        - `OTHER`
+- __mnist_loader.py__ : _Python file that loads and parses the MNIST dataset into training, validating, and testing datasets_
 - __network.py__ : _Python file that contains the network class that handles training, classifying, saving, and loading neural networks_
 - __layer.py__ : _Python file that contains the layer classes that handle specific layer behaviors_
 - __costs.py__ : _Python file that contains all cost functions used by neural networks_
+- __activations.py__ : _Python file that contains all activation functions used by neural networks_
 - __main.py__ : _Python file that contains the implementation of the network class to train, run, and output the results_

@@ -21,8 +21,8 @@ class Network(object):
         '''
         Initialization function used to initialize all network biases and weights
         '''
-        self.layer_biases = [np.random.randn(layer,1) for layer in self.layers[1:]]
-        self.layer_weights = [np.random.randn(layer_prime,layer)/np.sqrt(layer) for layer,layer_prime in zip(self.layers[:-1],self.layers[1:])]
+        self.layer_biases = [np.random.randn(y,1) for y in self.layers[1:]]
+        self.layer_weights = [np.random.randn(y,x)/np.sqrt(x) for x,y in zip(self.layers[:-1],self.layers[1:])]
 
     ############################################################################
     ############################################################################
@@ -42,11 +42,12 @@ class Network(object):
 
     def runStatistics(self, data, regularization_rate):
         training_cost = self.calculateTrainingCost(data,regularization_rate)
-        training_accuracy = self.calculateTrainingAccuracy(data,regularization_rate)
+        training_accuracy = self.calculateTrainingAccuracy(data)
+        print("Testing: %f" %(training_accuracy/len(data)))
         print("Training Cost: %f" %(training_cost))
-        print("Training Accuracy: %f" %(training_accuracy))
+        print("Training Accuracy: %f" %(training_accuracy/len(data)))
 
-    def calculateTrainingAccuracy(self, data, regularization_rate):
+    def calculateTrainingAccuracy(self, data):
         results = [(np.argmax(self.feedforward(input)),np.argmax(output)) for input,output in data]
         result_accuracy = sum(int(result == output) for result, output in results)
         return result_accuracy
@@ -73,15 +74,14 @@ class Network(object):
         training_data = list(training_data)
 
         for i in range(epochs):
+            print("Running Epoch: %d" %(i))
             np.random.shuffle(training_data)
             mini_batches = [training_data[j:j+batch_size] for j in range(0,len(training_data),batch_size)]
+            counter = 0
             for batch in mini_batches:
                 self.miniBatchTraining(batch, learning_rate, regularization_rate, len(training_data))
 
-
             self.runStatistics(training_data,regularization_rate)
-        # TODO: ADD HEURISTICS TO stochasticGradientDescent METHOD TO QUANTIFY RESULTS
-        # raise Exception("METHOD INCOMPLETE")
 
     def miniBatchTraining(self, batch, learning_rate, regularization_rate, data_length):
         '''
@@ -92,11 +92,12 @@ class Network(object):
 
         for input, output in batch:
             change_of_weights, change_of_biases = self.backpropagate(input,output)
-            partial_of_weights = [weight+change for weight, change in zip(partial_of_weights, change_of_weights)]
-            partial_of_biases = [biase+change for biase, change in zip(partial_of_biases, change_of_biases)]
+            partial_of_biases = [biase+biase_change for biase, biase_change in zip(partial_of_biases, change_of_biases)]
+            partial_of_weights = [weight+weight_change for weight, weight_change in zip(partial_of_weights, change_of_weights)]
 
-        self.layer_weights = [(1-learning_rate*(regularization_rate/data_length))*weight-(learning_rate/len(batch))*partial for weight, partial in zip(self.layer_weights,partial_of_weights)]
-        self.layer_biases = [biase - (learning_rate*(regularization_rate/data_length))*partial for biase, partial in zip(self.layer_biases,partial_of_biases)]
+
+        self.layer_weights = [(1-learning_rate*(regularization_rate/data_length))*weight-(learning_rate/len(batch))*weight_partial for weight, weight_partial in zip(self.layer_weights,partial_of_weights)]
+        self.layer_biases = [biase - (learning_rate/len(batch)) * biase_partial for biase, biase_partial in zip(self.layer_biases, partial_of_biases)]
 
     def backpropagate(self,input,output):
         '''
@@ -110,19 +111,19 @@ class Network(object):
 
         # Input
         active = input
-        activations.append(active)
+        activations.append(input)
 
         # Start feedforward with input given and record all vectors and activations in order
         for weight, biase in zip(self.layer_weights,self.layer_biases):
             result = np.dot(weight,active)+biase
-            active = self.activation.func(result)
             vectors.append(result)
+            active = (self.activation).func(result)
             activations.append(active)
 
         # Start backward Pass
         change = (self.cost).delta(vectors[-1],activations[-1],output)
-        partial_of_weights[-1] = np.dot(change,activations[-2].transpose())
         partial_of_biases[-1] = change
+        partial_of_weights[-1] = np.dot(change,activations[-2].transpose())
 
         for i in range(2,self.num_layers):
             change = np.dot(self.layer_weights[-i+1].transpose(),change)*(self.activation).prime(vectors[-i])
