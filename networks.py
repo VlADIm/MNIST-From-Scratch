@@ -40,17 +40,26 @@ class Network(object):
     ############################################################################
     ############################################################################
 
-    def runStatistics(self, data, regularization_rate):
-        training_cost = self.calculateTrainingCost(data,regularization_rate)
-        training_accuracy = self.calculateTrainingAccuracy(data)
-        print("Testing: %f" %(training_accuracy/len(data)))
-        print("Training Cost: %f" %(training_cost))
-        print("Training Accuracy: %f" %(training_accuracy/len(data)))
+    def runStatistics(self, training_data, regularization_rate, evaluation_data=None):
+        training_cost = self.calculateTrainingCost(training_data,regularization_rate)
+        training_accuracy = self.calculateTrainingAccuracy(training_data)
+        print("Training Cost:\t\t{0:f}".format(training_cost))
+        print("Training Accuracy:\t{0:f}".format(training_accuracy/len(training_data)*100.0))
+        if(evaluation_data):
+            evaluation_accuracy = self.calculateEvaluationAccuracy(evaluation_data)
+            print("Evaluation Accuracy:\t{0:f}".format(evaluation_accuracy/len(evaluation_data)*100.0))
+
 
     def calculateTrainingAccuracy(self, data):
         results = [(np.argmax(self.feedforward(input)),np.argmax(output)) for input,output in data]
         result_accuracy = sum(int(result == output) for result, output in results)
         return result_accuracy
+
+    def calculateEvaluationAccuracy(self, data):
+        results = [(np.argmax(self.feedforward(input)),output) for input,output in data]
+        result_accuracy = sum(int(result == output) for result, output in results)
+        return result_accuracy
+
 
     def calculateError(self, data):
         raise Exception("METHOD INCOMPLETE")
@@ -70,8 +79,9 @@ class Network(object):
     ############################################################################
     ############################################################################
 
-    def stochasticGradientDescent(self, training_data, epochs, batch_size, learning_rate, regularization_rate):
+    def stochasticGradientDescent(self, training_data, epochs, batch_size, learning_rate, regularization_rate, evaluation_data=None):
         training_data = list(training_data)
+        evaluation_data = list(evaluation_data)
 
         for i in range(epochs):
             print("Running Epoch: %d" %(i))
@@ -81,7 +91,7 @@ class Network(object):
             for batch in mini_batches:
                 self.miniBatchTraining(batch, learning_rate, regularization_rate, len(training_data))
 
-            self.runStatistics(training_data,regularization_rate)
+            self.runStatistics(training_data,regularization_rate,evaluation_data=evaluation_data)
 
     def miniBatchTraining(self, batch, learning_rate, regularization_rate, data_length):
         '''
